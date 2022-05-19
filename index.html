@@ -20,6 +20,12 @@
       .will-be {
         margin-top: auto;
       }
+      .shuffle {
+        display: block;
+      }
+      .shuffle[aria-hidden] {
+        display: none;
+      }
       @media (prefers-color-scheme: dark) {
         body {
           background: #000;
@@ -31,7 +37,40 @@
   <body>
     <div class="will-be">
       Watch this space..<br />
-      Let that sink in..
+      <span class="shuffle">Let in sink in..</span>
+      <span class="shuffle" aria-hidden>We'll see you soon..</span>
+      <span class="shuffle" aria-hidden>What do we do, what do we do??</span>
+      <span class="shuffle" aria-hidden>We can and we will!!</span>
     </div>
+    
+    <script>
+      try {
+        (() => {
+          const interval = 3000,
+                container = document.querySelector(".will-be"),
+                getNodes = () => document.querySelectorAll(".shuffle"),
+                nodes = Array.from(getNodes()).map(node => {
+                  node.removeAttribute("aria-hidden");
+                  return node.outerHTML;
+                }),
+                func = () => {
+                  const nextChild = nodes.shift();
+
+                  if (container.querySelector(".shuffle"))
+                    container.removeChild(document.querySelector(".shuffle"));
+
+                  nodes.push(nextChild);
+                  container.innerHTML += nodes[0];
+                };
+
+          getNodes().forEach((node) => { node.remove(); });
+
+          setInterval(func, interval);
+          func();
+          
+        })()
+      } catch {
+      }
+    </script>
   </body>
 </html>
